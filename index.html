@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>Neon Brick Breaker</title>
+<meta name="description" content="Neon 2D brick breaker with 10 levels, touch and keyboard controls." />
+<link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- HUD -->
+    <header id="hud">
+      <div class="stat"><span class="label">SCORE</span><span id="score">0</span></div>
+      <div class="stat"><span class="label">BEST</span><span id="best">0</span></div>
+      <div class="stat"><span class="label">LEVEL</span><span id="level">1</span></div>
+      <div class="stat"><span class="label">LIVES</span><span id="lives">♥♥♥</span></div>
+      <div class="hud-actions">
+        <button id="muteBtn" class="icon-btn" aria-label="Mute sound">🔊</button>
+        <button id="pauseBtn" class="icon-btn" aria-label="Pause game">❚❚</button>
+      </div>
+    </header>
+
+    <!-- Playfield -->
+    <main id="stage">
+      <canvas id="game"></canvas>
+
+      <!-- Overlays -->
+      <div id="overlay" class="overlay">
+        <div class="panel">
+          <h1 id="ovTitle">NEON<br />BRICK BREAKER</h1>
+          <p id="ovText">10 levels. 3 lives. Don't drop the ball.</p>
+          <div class="btn-row">
+            <button id="primaryBtn" class="btn">START GAME</button>
+            <button id="secondaryBtn" class="btn btn-ghost">RESTART</button>
+          </div>
+          <p class="hint">Drag / swipe or use ← → keys · Space to pause</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Big mobile touch controls -->
+    <footer id="touchControls">
+      <button id="leftBtn" class="pad-btn" aria-label="Move left">◀</button>
+      <button id="resumeBtn" class="pad-btn pad-mid" aria-label="Pause or resume">❚❚</button>
+      <button id="rightBtn" class="pad-btn" aria-label="Move right">▶</button>
+    </footer>
+  </div>
+
+  <script src="./script.js"></script>
+</body>
+</html>
