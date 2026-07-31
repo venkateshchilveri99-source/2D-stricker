@@ -1,52 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-<title>Neon Brick Breaker</title>
-<meta name="description" content="Neon 2D brick breaker with 10 levels, touch and keyboard controls." />
-<link rel="stylesheet" href="./style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>2D Striker</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #050515;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Essential for zero touch latency */
+        canvas {
+            display: block;
+            touch-action: none;
+            background: #0a0a23;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+        }
+    </style>
 </head>
 <body>
-  <div id="app">
-    <!-- HUD -->
-    <header id="hud">
-      <div class="stat"><span class="label">SCORE</span><span id="score">0</span></div>
-      <div class="stat"><span class="label">BEST</span><span id="best">0</span></div>
-      <div class="stat"><span class="label">LEVEL</span><span id="level">1</span></div>
-      <div class="stat"><span class="label">LIVES</span><span id="lives">♥♥♥</span></div>
-      <div class="hud-actions">
-        <button id="muteBtn" class="icon-btn" aria-label="Mute sound">🔊</button>
-        <button id="pauseBtn" class="icon-btn" aria-label="Pause game">❚❚</button>
-      </div>
-    </header>
 
-    <!-- Playfield -->
-    <main id="stage">
-      <canvas id="game"></canvas>
+    <canvas id="gameCanvas"></canvas>
 
-      <!-- Overlays -->
-      <div id="overlay" class="overlay">
-        <div class="panel">
-          <h1 id="ovTitle">NEON<br />BRICK BREAKER</h1>
-          <p id="ovText">10 levels. 3 lives. Don't drop the ball.</p>
-          <div class="btn-row">
-            <button id="primaryBtn" class="btn">START GAME</button>
-            <button id="secondaryBtn" class="btn btn-ghost">RESTART</button>
-          </div>
-          <p class="hint">Drag / swipe or use ← → keys · Space to pause</p>
-        </div>
-      </div>
-    </main>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
 
-    <!-- Big mobile touch controls -->
-    <footer id="touchControls">
-      <button id="leftBtn" class="pad-btn" aria-label="Move left">◀</button>
-      <button id="resumeBtn" class="pad-btn pad-mid" aria-label="Pause or resume">❚❚</button>
-      <button id="rightBtn" class="pad-btn" aria-label="Move right">▶</button>
-    </footer>
-  </div>
+        // Responsive Resolution Scaling
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
 
-  <script src="./script.js"></script>
+        // Game State
+        const paddle = {
+            width: Math.max(100, canvas.width * 0.25),
+            height: 16,
+            x: canvas.width / 2 - 50,
+            y: canvas.height - 40,
+            color: '#00f0ff'
+        };
+
+        // Instant Touch Sensing (No lag)
+        function handleTouch(e) {
+            e.preventDefault(); // Prevents scroll/zoom delay
+            if (e.touches.length > 0) {
+                const touchX = e.touches[0].clientX;
+                // Center the paddle on finger
+                paddle.x = touchX - paddle.width / 2;
+
+                // Keep paddle inside screen bounds
+                if (paddle.x < 0) paddle.x = 0;
+                if (paddle.x + paddle.width > canvas.width) {
+                    paddle.x = canvas.width - paddle.width;
+                }
+            }
+        }
+
+        // Attach direct, non-passive touch listeners
+        canvas.addEventListener('touchstart', handleTouch, { passive: false });
+        canvas.addEventListener('touchmove', handleTouch, { passive: false });
+
+        // Mouse backup for desktop testing
+        canvas.addEventListener('mousemove', (e) => {
+            paddle.x = e.clientX - paddle.width / 2;
+        });
+
+        // Smooth 60 FPS Game Loop
+        function gameLoop() {
+            // Clear Frame
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Paddle
+            ctx.fillStyle = paddle.color;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = paddle.color;
+            ctx.beginPath();
+            ctx.roundRect(paddle.x, paddle.y, paddle.width, paddle.height, 8);
+            ctx.fill();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        requestAnimationFrame(gameLoop);
+    </script>
 </body>
 </html>
